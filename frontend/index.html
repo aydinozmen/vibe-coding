@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veri Getir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white">
+    <div class="flex min-h-screen items-center justify-center px-6 py-12">
+      <div class="w-full max-w-lg rounded-3xl border border-white/10 bg-white/5 p-10 shadow-2xl shadow-slate-900/50 backdrop-blur-xl">
+        <div class="text-center">
+          <h1 class="text-4xl font-semibold tracking-tight text-slate-100">Veriyi Getir</h1>
+          <p class="mt-3 text-slate-300">Aşağıdaki butona tıklayarak backend'den mesajı çekebilirsiniz.</p>
+        </div>
+
+        <div class="mt-10 flex flex-col items-center gap-4">
+          <button
+            id="fetchButton"
+            class="inline-flex items-center justify-center rounded-full bg-cyan-500 px-8 py-4 text-lg font-semibold text-slate-950 transition duration-300 hover:bg-cyan-400 focus:outline-none focus:ring-4 focus:ring-cyan-300"
+          >
+            Veriyi Getir
+          </button>
+
+          <div
+            id="messageContainer"
+            class="w-full rounded-3xl border border-white/10 bg-slate-950/80 p-6 text-center text-xl text-slate-100 shadow-xl shadow-cyan-500/10"
+          >
+            Mesaj burada görünecek.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const button = document.getElementById('fetchButton');
+      const messageContainer = document.getElementById('messageContainer');
+
+      button.addEventListener('click', async () => {
+        messageContainer.textContent = 'Yükleniyor...';
+
+        try {
+          const response = await fetch('http://localhost:8080/api/data');
+          if (!response.ok) {
+            throw new Error(`Sunucu hatası: ${response.status}`);
+          }
+
+          const data = await response.json();
+          messageContainer.textContent = data.mesaj ?? 'Mesaj bulunamadı.';
+        } catch (error) {
+          messageContainer.textContent = 'Veri alınırken hata oluştu.';
+          console.error(error);
+        }
+      });
+    </script>
+  </body>
+</html>
